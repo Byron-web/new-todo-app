@@ -1,15 +1,15 @@
 import React, { useState } from "react";
-import { Modal, Form, Button } from "react-bootstrap";
+import { Form, Button } from "react-bootstrap";
 
-const LoginForm = ({ show, handleClose, handleShowSignup }) => {
-  const [email, setEmail] = useState("");
+const LoginForm = ({ handleShowSignup, onLogin }) => {
+  const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [isSignup, setIsSignup] = useState(false);
   const [confirmPassword, setConfirmPassword] = useState("");
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    const loginData = { email, password };
+    const loginData = { username, password };
     fetch("/api/users/login", {
       method: "POST",
       headers: {
@@ -36,12 +36,12 @@ const LoginForm = ({ show, handleClose, handleShowSignup }) => {
   return (
     <Form onSubmit={handleSubmit}>
       <Form.Group className="mb-3" controlId="formBasicEmail">
-        <Form.Label>Email address</Form.Label>
+        <Form.Label>Username</Form.Label>
         <Form.Control
-          type="email"
-          placeholder="Enter email"
-          value={email}
-          onChange={(e) => setEmail(e.target.value)}
+          type="text"
+          placeholder="Enter username"
+          value={username}
+          onChange={(e) => setUsername(e.target.value)}
         />
         <Form.Text className="text-muted">
           We'll never share your email with anyone else.
@@ -57,17 +57,6 @@ const LoginForm = ({ show, handleClose, handleShowSignup }) => {
           onChange={(e) => setPassword(e.target.value)}
         />
       </Form.Group>
-      {isSignup && (
-        <Form.Group className="mb-3" controlId="formBasicConfirmPassword">
-          <Form.Label>Confirm Password</Form.Label>
-          <Form.Control
-            type="password"
-            placeholder="Confirm Password"
-            value={confirmPassword}
-            onChange={(e) => setConfirmPassword(e.target.value)}
-          />
-        </Form.Group>
-      )}
       <div className="d-flex justify-content-around align-items-center mb-3">
         {isSignup ? (
           <p className="m-0">
@@ -79,7 +68,7 @@ const LoginForm = ({ show, handleClose, handleShowSignup }) => {
         ) : (
           <p className="m-0">
             Don't have an account?{" "}
-            <Button variant="link" onClick={() => setIsSignup(true)}>
+            <Button variant="link" onClick={handleShowSignup}>
               Sign up
             </Button>
           </p>
@@ -89,7 +78,7 @@ const LoginForm = ({ show, handleClose, handleShowSignup }) => {
         {isSignup ? "Sign up" : "Log in"}
       </Button>
       {isSignup && (
-        <Button variant="link" onClick={handleClose}>
+        <Button variant="link" onClick={() => setIsSignup(false)}>
           Cancel
         </Button>
       )}
