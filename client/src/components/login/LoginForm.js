@@ -1,52 +1,61 @@
 import React, { useState } from "react";
-import { Form, Button } from "react-bootstrap";
 import "bootstrap/dist/css/bootstrap.min.css";
 
-const LoginForm = ({ handleShowSignup }) => {
-  const [email, setEmail] = useState("");
+function Login(props) {
+  const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
 
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    // Work on this when backend is done
+  const handleLogin = () => {
+    fetch("/api/users/login", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ username, password }),
+    })
+      .then((res) => {
+        if (res.ok) {
+          return res.json();
+        }
+        throw new Error("Invalid credentials");
+      })
+      .then((data) => {
+        // Set the JWT token in App state
+        props.onLogin(data.token);
+      })
+      .catch((error) => {
+        console.error(error);
+      });
   };
 
   return (
-    <>
-      <Form onSubmit={handleSubmit}>
-        <Form.Group className="mb-3" controlId="formBasicEmail">
-          <Form.Label>Email address</Form.Label>
-          <Form.Control
-            type="email"
-            placeholder="Enter email"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
+    <div>
+      <h1>Login</h1>
+      <form>
+        <div>
+          <label htmlFor="username">Username:</label>
+          <input
+            type="text"
+            id="username"
+            value={username}
+            onChange={(e) => setUsername(e.target.value)}
           />
-          <Form.Text className="text-muted">
-            We'll never share your email with anyone else.
-          </Form.Text>
-        </Form.Group>
-        <Form.Group className="mb-3" controlId="formBasicPassword">
-          <Form.Label>Password</Form.Label>
-          <Form.Control
+        </div>
+        <div>
+          <label htmlFor="password">Password:</label>
+          <input
             type="password"
-            placeholder="Password"
+            id="password"
             value={password}
             onChange={(e) => setPassword(e.target.value)}
           />
-        </Form.Group>
-        <div className="d-flex justify-content-around align-items-center mb-3">
-          <p className="m-0">Or</p>
-          <Button variant="primary" onClick={handleShowSignup}>
-            Sign up
-          </Button>
         </div>
-        <Button variant="success" type="submit">
-          Submit
-        </Button>
-      </Form>
-    </>
+        <button type="button" onClick={handleLogin}>
+          Login
+        </button>
+      </form>
+    </div>
   );
-};
+}
 
-export default LoginForm;
+export default Login;
