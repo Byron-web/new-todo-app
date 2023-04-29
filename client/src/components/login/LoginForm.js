@@ -1,36 +1,33 @@
 import React, { useState } from "react";
 import { Form, Button } from "react-bootstrap";
 
-const LoginForm = ({ handleShowSignup, onLogin }) => {
+const LoginForm = () => {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
-  const [isSignup, setIsSignup] = useState(false);
-  const [confirmPassword, setConfirmPassword] = useState("");
+  const [loggedIn, setLoggedIn] = useState(false);
+  const [errorMessage, setErrrorMessage] = useState("");
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     const loginData = { username, password };
-    fetch("/api/users/login", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(loginData),
-    })
-      .then((res) => {
-        if (res.ok) {
-          return res.json();
-        } else {
-          throw new Error("Login failed");
-        }
-      })
-      .then((data) => {
-        onLogin(data.token);
-      })
-      .catch((error) => {
-        console.log(error);
-        alert("Login failed. Please try again.");
+    try {
+      const res = await fetch("/api/users/login", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(loginData),
       });
+      if (!res.ok) {
+        setErrrorMessage((await res.json()).err);
+        return;
+      }
+      document.cookie = `token=${(await res.json()).token}`;
+      setLoggedIn(new Boolean(true));
+    } catch (error) {
+      console.log(error);
+      setErrrorMessage("Failed to log in");
+    }
   };
 
   return (
@@ -47,7 +44,7 @@ const LoginForm = ({ handleShowSignup, onLogin }) => {
           We'll never share your email with anyone else.
         </Form.Text>
       </Form.Group>
-
+      {loggedIn[0]}
       <Form.Group className="mb-3" controlId="formBasicPassword">
         <Form.Label>Password</Form.Label>
         <Form.Control
@@ -57,31 +54,9 @@ const LoginForm = ({ handleShowSignup, onLogin }) => {
           onChange={(e) => setPassword(e.target.value)}
         />
       </Form.Group>
-      <div className="d-flex justify-content-around align-items-center mb-3">
-        {isSignup ? (
-          <p className="m-0">
-            Already have an account?{" "}
-            <Button variant="link" onClick={() => setIsSignup(false)}>
-              Log in
-            </Button>
-          </p>
-        ) : (
-          <p className="m-0">
-            Don't have an account?{" "}
-            <Button variant="link" onClick={handleShowSignup}>
-              Sign up
-            </Button>
-          </p>
-        )}
-      </div>
-      <Button variant="primary" type="submit">
-        {isSignup ? "Sign up" : "Log in"}
+      <Button variant="link" type="submit">
+        Log in
       </Button>
-      {isSignup && (
-        <Button variant="link" onClick={() => setIsSignup(false)}>
-          Cancel
-        </Button>
-      )}
     </Form>
   );
 };

@@ -4,44 +4,33 @@ import TodoList from "./components/todo/TodoList";
 import "bootstrap/dist/css/bootstrap.min.css";
 
 function App() {
-  const [isLoggedIn, setIsLoggedIn] = useState(false);
-  const [token, setToken] = useState("");
+  const [loggedIn, setLoggedIn] = useState(true);
 
-  useEffect(() => {
-    fetch("/api/users/auth", {
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
-    })
-      .then((res) => {
-        if (res.status === 200) {
-          setIsLoggedIn(true);
-        }
-      })
-      .catch((err) => {
-        setIsLoggedIn(false);
-        console.log(err);
-      });
-  }, [token]);
+  // useEffect(() => {
+  //   fetch("/api/users/auth", {
+  //     headers: {
+  //       Authorization: `Bearer ${token}`,
+  //     },
+  //   })
+  //     .then((res) => {
+  //       if (res.status === 200) {
+  //         setIsLoggedIn(true);
+  //       }
+  //     })
+  //     .catch((err) => {
+  //       setIsLoggedIn(false);
+  //       console.log(err);
+  //     });
+  // }, [token]);
 
-  const handleLogin = (token) => {
-    setToken(token);
-    setIsLoggedIn(true);
-  };
-
-  const handleLogout = () => {
-    setToken("");
-    setIsLoggedIn(false);
-  };
-
+  // const handleLogin = (token) => {
+  //   setToken(token);
+  //   setIsLoggedIn(true);
+  // };
   return (
     <div className="App">
-      {/* {isLoggedIn ? (
-        <TodoList token={token} onLogout={handleLogout} />
-      ) : (
-        <Login onLogin={handleLogin} />
-      )} */}
-      <Login />
+      {loggedIn}
+      {loggedIn ? <TodoList /> : <Login />}
     </div>
   );
 }
