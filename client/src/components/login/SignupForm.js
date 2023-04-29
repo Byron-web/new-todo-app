@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { Modal, Form, Button } from "react-bootstrap";
 
 const SignupForm = ({ show, handleClose, handleShowLogin }) => {
-  const [email, setEmail] = useState("");
+  const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
   const [signupSuccess, setSignupSuccess] = useState(false);
@@ -21,7 +21,7 @@ const SignupForm = ({ show, handleClose, handleShowLogin }) => {
         "Content-Type": "application/json",
       },
       body: JSON.stringify({
-        email: email,
+        username: username,
         password: password,
       }),
     })
@@ -43,16 +43,16 @@ const SignupForm = ({ show, handleClose, handleShowLogin }) => {
 
   return (
     <Form onSubmit={handleSubmit}>
-      <Form.Group className="mb-3" controlId="formBasicEmail">
-        <Form.Label>Email address</Form.Label>
+      <Form.Group className="mb-3" controlId="formBasicUsername">
+        <Form.Label>Username</Form.Label>
         <Form.Control
-          type="email"
-          placeholder="Enter email"
-          value={email}
-          onChange={(e) => setEmail(e.target.value)}
+          type="text"
+          placeholder="Enter username"
+          value={username}
+          onChange={(e) => setUsername(e.target.value)}
         />
         <Form.Text className="text-muted">
-          We'll never share your email with anyone else.
+          We'll never share your username with anyone else.
         </Form.Text>
       </Form.Group>
 
