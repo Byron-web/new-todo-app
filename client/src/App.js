@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import Login from "./components/login/Login";
 import TodoList from "./components/todo/TodoList";
+import "bootstrap/dist/css/bootstrap.min.css";
 
 function App() {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
@@ -35,11 +36,12 @@ function App() {
 
   return (
     <div className="App">
-      {isLoggedIn ? (
+      {/* {isLoggedIn ? (
         <TodoList token={token} onLogout={handleLogout} />
       ) : (
         <Login onLogin={handleLogin} />
-      )}
+      )} */}
+      <Login />
     </div>
   );
 }
