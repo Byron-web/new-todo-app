@@ -36,8 +36,10 @@ const SignupForm = ({ show, handleClose, handleShowLogin }) => {
         setSignupError("");
       })
       .catch((error) => {
-        setSignupSuccess(false);
-        setSignupError(error.message);
+        response.json().then((data) => {
+          setSignupSuccess(false);
+          setSignupError(data.message);
+        });
       });
   };
 
