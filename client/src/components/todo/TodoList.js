@@ -1,23 +1,30 @@
 import React, { useState, useEffect } from "react";
-import { Button, Form } from "react-bootstrap";
+import { Button, Form, Container } from "react-bootstrap";
 import TodoItem from "./TodoItem";
 
 const TodoList = () => {
   const [todos, setTodos] = useState([]);
 
   useEffect(() => {
-    fetch("/api/todo")
-      .then((response) => response.json())
-      .then((data) => setTodos(data));
+    fetch("http://localhost:5000/api/todo")
+      .then((response) => {
+        if (response.ok) {
+          return response.json();
+        } else {
+          throw new Error("Failed to fetch todos");
+        }
+      })
+      .then((data) => setTodos(data))
+      .catch((error) => console.error(error));
   }, []);
 
   return (
-    <div>
-      <h1>Todo List</h1>
+    <Container>
+      <h1 className="m-4">Todo List</h1>
       <ul>
         <TodoItem />
       </ul>
-    </div>
+    </Container>
   );
 };
 

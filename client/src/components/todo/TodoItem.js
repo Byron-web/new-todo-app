@@ -4,7 +4,7 @@ import { Card, Button } from "react-bootstrap";
 const TodoItem = () => {
   return (
     <Card>
-      <Card.Body>
+      <Card.Body className="p-4">
         <Card.Title>Title</Card.Title>
         <Button variant="primary">Edit</Button>{" "}
         <Button variant="danger">Delete</Button>{" "}
