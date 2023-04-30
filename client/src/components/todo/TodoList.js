@@ -9,6 +9,7 @@ const TodoList = () => {
   const [newTaskColor, setNewTaskColor] = useState("#FFFFFF");
   const [newTaskDate, setNewTaskDate] = useState(new Date());
   const [showModal, setShowModal] = useState(false);
+  const [editTodo, setEditTodo] = useState(null);
 
   useEffect(() => {
     const fetchTodos = async () => {
@@ -109,6 +110,7 @@ const TodoList = () => {
 
   return (
     <Container>
+      {errorMessage}
       <h1>Todo List</h1>
       <Button variant="primary" onClick={handleCreateClick}>
         Create
