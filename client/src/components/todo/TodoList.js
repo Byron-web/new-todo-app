@@ -86,6 +86,27 @@ const TodoList = () => {
     }
   };
 
+  const handleDelete = async () => {
+    try {
+      const token = document.cookie.split("=")[1];
+      const res = await fetch(`http://localhost:5000/api/todo/${id}`, {
+        method: "DELETE",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `${token}`,
+        },
+      });
+      if (!res.ok) {
+        console.log(await res.json());
+        return;
+      }
+      onDelete(id);
+      window.location.reload();
+    } catch (err) {
+      console.log(err);
+    }
+  };
+
   return (
     <Container>
       <h1>Todo List</h1>
@@ -100,6 +121,7 @@ const TodoList = () => {
             title={todo.task}
             color={todo.color}
             finishDate={todo.finishDate}
+            onDelete={handleDelete}
           />
         ))}
       </div>
@@ -123,7 +145,7 @@ const TodoList = () => {
               <Form.Control
                 as="select"
                 value={newTaskColor}
-                onChange={(e) => handleNewTaskColorChange(e.target.value)}
+                onChange={handleNewTaskColorChange}
               >
                 <option value="Yellow">Yellow</option>
                 <option value="Orange">Orange</option>

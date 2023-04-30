@@ -5,6 +5,27 @@ const TodoItem = ({ id, title, color, finishDate, onEdit, onDelete }) => {
   const [completed, setCompleted] = useState(finishDate ? true : false);
   const [completionDate, setCompletionDate] = useState(null);
 
+  const handleDelete = async () => {
+    try {
+      const token = document.cookie.split("=")[1];
+      const res = await fetch(`http://localhost:5000/api/todo/${id}`, {
+        method: "DELETE",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `${token}`,
+        },
+      });
+      if (!res.ok) {
+        console.log(await res.json());
+        return;
+      }
+      onDelete(id);
+      window.location.reload();
+    } catch (err) {
+      console.log(err);
+    }
+  };
+
   return (
     <Card style={{ backgroundColor: color }}>
       <Card.Body>
@@ -15,7 +36,7 @@ const TodoItem = ({ id, title, color, finishDate, onEdit, onDelete }) => {
         <Button variant="secondary" onClick={() => onEdit(id)}>
           Edit
         </Button>{" "}
-        <Button variant="danger" onClick={() => onDelete(id)}>
+        <Button variant="danger" onClick={handleDelete}>
           Delete
         </Button>
       </Card.Body>
