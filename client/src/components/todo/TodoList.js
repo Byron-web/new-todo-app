@@ -4,6 +4,7 @@ import TodoItem from "./TodoItem";
 
 const TodoList = () => {
   const [todos, setTodos] = useState([]);
+  const [errorMessage, setErrrorMessage] = useState("");
 
   useEffect(() => {
     const fetchTodos = async () => {
@@ -11,14 +12,17 @@ const TodoList = () => {
         const token = document.cookie.split("=")[1];
         const res = await fetch("http://localhost:5000/api/todo", {
           headers: {
-            Authorization: `Bearer ${token}`,
+            "Content-Type": "application/json",
+            Authorization: `${token}`,
           },
         });
         if (!res.ok) {
-          throw new Error(await res.text());
+          setErrrorMessage((await res.json()).err);
+          return;
         }
         const data = await res.json();
         setTodos(data);
+        console.log(todos);
       } catch (err) {
         console.log(err);
       }
