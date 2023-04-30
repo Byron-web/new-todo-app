@@ -23,7 +23,7 @@ const LoginForm = () => {
         return;
       }
       document.cookie = `token=${(await res.json()).token}`;
-      setLoggedIn(new Boolean(true));
+      setLoggedIn(true);
     } catch (error) {
       console.log(error);
       setErrrorMessage("Failed to log in");
