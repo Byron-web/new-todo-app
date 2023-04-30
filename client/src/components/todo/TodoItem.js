@@ -1,9 +1,11 @@
 import React, { useState } from "react";
-import { Card, Button } from "react-bootstrap";
+import { Card, Button, Modal, Form } from "react-bootstrap";
 
-const TodoItem = ({ id, title, color, finishDate, onDelete, onEdit }) => {
+const TodoItem = ({ id, title, color, finishDate, onDelete }) => {
   const [completed, setCompleted] = useState(finishDate ? true : false);
   const [completionDate, setCompletionDate] = useState(null);
+  const [editModalShow, setEditModalShow] = useState(false);
+  const [editTitle, setEditTitle] = useState(title);
 
   const handleDelete = async () => {
     try {
@@ -27,7 +29,8 @@ const TodoItem = ({ id, title, color, finishDate, onDelete, onEdit }) => {
   };
 
   const handleEdit = () => {
-    onEdit({ _id: id, task: title, color: color, finishDate: finishDate });
+    onEdit(id, editTitle);
+    setEditModalShow(false);
   };
 
   return (
@@ -37,17 +40,7 @@ const TodoItem = ({ id, title, color, finishDate, onDelete, onEdit }) => {
         {completed && completionDate && (
           <Card.Text>Finished: {completionDate.toString()}</Card.Text>
         )}
-        <Button
-          variant="secondary"
-          onClick={() =>
-            onEdit({
-              _id: id,
-              task: title,
-              color: color,
-              finishDate: finishDate,
-            })
-          }
-        >
+        <Button variant="secondary" onClick={() => setEditModalShow(true)}>
           Edit
         </Button>{" "}
         <Button variant="danger" onClick={handleDelete}>
@@ -59,36 +52,33 @@ const TodoItem = ({ id, title, color, finishDate, onDelete, onEdit }) => {
           Finished: {completionDate.toString()}
         </Card.Footer>
       )}
+      <Modal show={editModalShow} onHide={() => setEditModalShow(false)}>
+        <Modal.Header closeButton>
+          <Modal.Title>Edit Todo</Modal.Title>
+        </Modal.Header>
+        <Form onSubmit={handleEdit}>
+          <Modal.Body>
+            <Form.Group controlId="formBasicEmail">
+              <Form.Label>Title</Form.Label>
+              <Form.Control
+                type="text"
+                placeholder="Enter title"
+                value={editTitle}
+                onChange={(event) => setEditTitle(event.target.value)}
+              />
+            </Form.Group>
+          </Modal.Body>
+          <Modal.Footer>
+            <Button variant="secondary" onClick={() => setEditModalShow(false)}>
+              Cancel
+            </Button>
+            <Button variant="primary" type="submit">
+              Save
+            </Button>
+          </Modal.Footer>
+        </Form>
+      </Modal>
     </Card>
-  );
-};
-
-TodoItem.EditModal = ({ show, onHide, todo, onSave }) => {
-  const [title, setTitle] = useState(todo.task);
-  const [color, setColor] = useState(todo.color);
-  const [finishDate, setFinishDate] = useState(new Date(todo.finishDate));
-
-  const handleSave = () => {
-    onSave(todo._id, title, color, finishDate);
-  };
-
-  return (
-    <Modal show={show} onHide={onHide}>
-      <Modal.Header closeButton>
-        <Modal.Title>Edit Task</Modal.Title>
-      </Modal.Header>
-      <Modal.Body>
-        <Form>{/* ... */}</Form>
-      </Modal.Body>
-      <Modal.Footer>
-        <Button variant="secondary" onClick={onHide}>
-          Close
-        </Button>
-        <Button variant="primary" onClick={handleSave}>
-          Save
-        </Button>
-      </Modal.Footer>
-    </Modal>
   );
 };
 

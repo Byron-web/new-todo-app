@@ -4,13 +4,14 @@ import TodoItem from "./TodoItem";
 
 const TodoList = () => {
   const [todos, setTodos] = useState([]);
-  const [errorMessage, setErrrorMessage] = useState("");
+  const [errorMessage, setErrorMessage] = useState("");
+  const [editModalShow, setEditModalShow] = useState(false);
+  const [editId, setEditId] = useState("");
+  const [editTitle, setEditTitle] = useState("");
   const [newTaskTitle, setNewTaskTitle] = useState("");
   const [newTaskColor, setNewTaskColor] = useState("#FFFFFF");
   const [newTaskDate, setNewTaskDate] = useState(new Date());
   const [showModal, setShowModal] = useState(false);
-  const [editTodo, setEditTodo] = useState(null);
-  const [showEditModal, setShowEditModal] = useState(false);
 
   useEffect(() => {
     const fetchTodos = async () => {
@@ -23,15 +24,15 @@ const TodoList = () => {
           },
         });
         if (!res.ok) {
-          setErrrorMessage((await res.json()).err);
+          setErrorMessage((await res.json()).err);
           return;
         }
         const data = await res.json();
         setTodos(data);
-        setErrrorMessage("");
+        setErrorMessage("");
       } catch (err) {
         console.log(err);
-        setErrorMessage(err.response.data.message);
+        setErrorMessage("This is an error");
       }
     };
 
@@ -109,28 +110,37 @@ const TodoList = () => {
     }
   };
 
-  // Function to handle saving edits to a Todo
-  const handleEditSave = async (id, title, color, finishDate) => {
+  const handleEdit = (id, title) => {
+    setEditId(id);
+    setEditTitle(title);
+    setEditModalShow(true);
+  };
+
+  const handleEditCancel = () => {
+    setEditModalShow(false);
+  };
+
+  const handleEditSave = async (event) => {
+    event.preventDefault();
     try {
       const token = document.cookie.split("=")[1];
-      const res = await fetch(`http://localhost:5000/api/todo/${id}`, {
+      const res = await fetch(`http://localhost:5000/api/todo/${editId}`, {
         method: "PUT",
         headers: {
           "Content-Type": "application/json",
           Authorization: `${token}`,
         },
-        body: JSON.stringify({
-          task: title,
-          color: color,
-          finishDate: finishDate,
-        }),
+        body: JSON.stringify({ task: editTitle }),
       });
       if (!res.ok) {
         console.log(await res.json());
         return;
       }
-      handleEditTask(id, title, color, finishDate);
-      setShowEditModal(false);
+      setEditModalShow(false);
+      const updatedTodos = todos.map((todo) =>
+        todo._id === editId ? { ...todo, task: editTitle } : todo
+      );
+      setTodos(updatedTodos);
     } catch (err) {
       console.log(err);
     }
@@ -152,10 +162,36 @@ const TodoList = () => {
             color={todo.color}
             finishDate={todo.finishDate}
             onDelete={handleDelete}
-            onEdit={handleEditSave}
+            onEdit={handleEdit}
           />
         ))}
       </div>
+      <Modal show={editModalShow} onHide={handleEditCancel}>
+        <Modal.Header closeButton>
+          <Modal.Title>Edit Todo</Modal.Title>
+        </Modal.Header>
+        <Form onSubmit={handleEditSave}>
+          <Modal.Body>
+            <Form.Group controlId="formBasicEmail">
+              <Form.Label>Title</Form.Label>
+              <Form.Control
+                type="text"
+                placeholder="Enter title"
+                value={editTitle}
+                onChange={(event) => setEditTitle(event.target.value)}
+              />
+            </Form.Group>
+          </Modal.Body>
+          <Modal.Footer>
+            <Button variant="secondary" onClick={handleEditCancel}>
+              Cancel
+            </Button>
+            <Button variant="primary" type="submit">
+              Save Changes
+            </Button>
+          </Modal.Footer>
+        </Form>
+      </Modal>
       <Modal show={showModal} onHide={handleCloseModal}>
         <Modal.Header closeButton>
           <Modal.Title>Create Task</Modal.Title>
@@ -203,14 +239,6 @@ const TodoList = () => {
           </Button>
         </Modal.Footer>
       </Modal>
-      {editTodo && (
-        <TodoItem.EditModal
-          show={showEditModal}
-          onHide={() => setShowEditModal(false)}
-          todo={editTodo}
-          onSave={handleEditSave}
-        />
-      )}
     </Container>
   );
 };
