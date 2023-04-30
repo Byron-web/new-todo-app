@@ -7,6 +7,7 @@ const TodoList = () => {
   const [errorMessage, setErrrorMessage] = useState("");
   const [newTaskTitle, setNewTaskTitle] = useState("");
   const [newTaskColor, setNewTaskColor] = useState("#FFFFFF");
+  const [newTaskDate, setNewTaskDate] = useState(new Date());
   const [showModal, setShowModal] = useState(false);
 
   useEffect(() => {
@@ -28,7 +29,7 @@ const TodoList = () => {
         setErrrorMessage("");
       } catch (err) {
         console.log(err);
-        setErrorMessage(error.response.data.message);
+        setErrorMessage(err.response.data.message);
       }
     };
 
@@ -43,6 +44,7 @@ const TodoList = () => {
     setShowModal(false);
     setNewTaskTitle("");
     setNewTaskColor("#FFFFFF");
+    setNewTaskDate(new Date());
   };
 
   const handleNewTaskTitleChange = (event) => {
@@ -51,6 +53,10 @@ const TodoList = () => {
 
   const handleNewTaskColorChange = (event) => {
     setNewTaskColor(event.target.value);
+  };
+
+  const handleNewTaskDateChange = (event) => {
+    setNewTaskDate(event.target.valueAsDate);
   };
 
   const handleCreateTask = async () => {
@@ -62,7 +68,11 @@ const TodoList = () => {
           "Content-Type": "application/json",
           Authorization: `${token}`,
         },
-        body: JSON.stringify({ task: newTaskTitle, color: newTaskColor }),
+        body: JSON.stringify({
+          task: newTaskTitle,
+          color: newTaskColor,
+          finishDate: newTaskDate,
+        }),
       });
       if (!res.ok) {
         setErrorMessage((await res.json()).err);
@@ -89,6 +99,7 @@ const TodoList = () => {
             id={todo._id}
             title={todo.task}
             color={todo.color}
+            finishDate={todo.finishDate}
           />
         ))}
       </div>
@@ -112,13 +123,21 @@ const TodoList = () => {
               <Form.Control
                 as="select"
                 value={newTaskColor}
-                onChange={(e) => setNewTaskColor(e.target.value)}
+                onChange={(e) => handleNewTaskColorChange(e.target.value)}
               >
                 <option value="Yellow">Yellow</option>
                 <option value="Orange">Orange</option>
                 <option value="Red">Red</option>
                 <option value="Green">Green</option>
               </Form.Control>
+            </Form.Group>
+            <Form.Group controlId="formTaskDate">
+              <Form.Label>Date</Form.Label>
+              <Form.Control
+                type="date"
+                value={newTaskDate.toISOString().substring(0, 10)}
+                onChange={handleNewTaskDateChange}
+              />
             </Form.Group>
           </Form>
         </Modal.Body>
