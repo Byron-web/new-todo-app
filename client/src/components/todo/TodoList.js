@@ -108,6 +108,20 @@ const TodoList = () => {
     }
   };
 
+  const handleEditClick = (todo) => {
+    setEditTodo(todo);
+    setShowEditModal(true);
+  };
+
+  const handleEditTask = (id, title, color, date) => {
+    const editedTodo = todos.find((todo) => todo._id === id);
+    editedTodo.task = title;
+    editedTodo.color = color;
+    editedTodo.finishDate = date;
+    setTodos([...todos]);
+    setEditTodo(null);
+  };
+
   return (
     <Container>
       {errorMessage}
@@ -124,8 +138,17 @@ const TodoList = () => {
             color={todo.color}
             finishDate={todo.finishDate}
             onDelete={handleDelete}
+            onEdit={() => setEditTodo(todo)}
           />
         ))}
+        {editTodo && (
+          <EditTodo
+            show={true}
+            editTodo={editTodo}
+            handleEditTask={handleEditTask}
+            handleClose={() => setEditTodo(null)}
+          />
+        )}
       </div>
       <Modal show={showModal} onHide={handleCloseModal}>
         <Modal.Header closeButton>
