@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { Card, Button } from "react-bootstrap";
 
-const TodoItem = ({ id, title, color, finishDate, onDelete }) => {
+const TodoItem = ({ id, title, color, finishDate, onDelete, onEdit }) => {
   const [completed, setCompleted] = useState(finishDate ? true : false);
   const [completionDate, setCompletionDate] = useState(null);
 
@@ -26,6 +26,10 @@ const TodoItem = ({ id, title, color, finishDate, onDelete }) => {
     }
   };
 
+  const handleEdit = () => {
+    onEdit({ _id: id, task: title, color: color, finishDate: finishDate });
+  };
+
   return (
     <Card style={{ backgroundColor: color }}>
       <Card.Body>
@@ -33,7 +37,19 @@ const TodoItem = ({ id, title, color, finishDate, onDelete }) => {
         {completed && completionDate && (
           <Card.Text>Finished: {completionDate.toString()}</Card.Text>
         )}
-        <Button variant="secondary">Edit</Button>{" "}
+        <Button
+          variant="secondary"
+          onClick={() =>
+            onEdit({
+              _id: id,
+              task: title,
+              color: color,
+              finishDate: finishDate,
+            })
+          }
+        >
+          Edit
+        </Button>{" "}
         <Button variant="danger" onClick={handleDelete}>
           Delete
         </Button>
@@ -44,6 +60,35 @@ const TodoItem = ({ id, title, color, finishDate, onDelete }) => {
         </Card.Footer>
       )}
     </Card>
+  );
+};
+
+TodoItem.EditModal = ({ show, onHide, todo, onSave }) => {
+  const [title, setTitle] = useState(todo.task);
+  const [color, setColor] = useState(todo.color);
+  const [finishDate, setFinishDate] = useState(new Date(todo.finishDate));
+
+  const handleSave = () => {
+    onSave(todo._id, title, color, finishDate);
+  };
+
+  return (
+    <Modal show={show} onHide={onHide}>
+      <Modal.Header closeButton>
+        <Modal.Title>Edit Task</Modal.Title>
+      </Modal.Header>
+      <Modal.Body>
+        <Form>{/* ... */}</Form>
+      </Modal.Body>
+      <Modal.Footer>
+        <Button variant="secondary" onClick={onHide}>
+          Close
+        </Button>
+        <Button variant="primary" onClick={handleSave}>
+          Save
+        </Button>
+      </Modal.Footer>
+    </Modal>
   );
 };
 

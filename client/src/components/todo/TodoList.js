@@ -9,6 +9,8 @@ const TodoList = () => {
   const [newTaskColor, setNewTaskColor] = useState("#FFFFFF");
   const [newTaskDate, setNewTaskDate] = useState(new Date());
   const [showModal, setShowModal] = useState(false);
+  const [editTodo, setEditTodo] = useState(null);
+  const [showEditModal, setShowEditModal] = useState(false);
 
   useEffect(() => {
     const fetchTodos = async () => {
@@ -107,18 +109,31 @@ const TodoList = () => {
     }
   };
 
-  const handleEditClick = (todo) => {
-    setEditTodo(todo);
-    setShowEditModal(true);
-  };
-
-  const handleEditTask = (id, title, color, date) => {
-    const editedTodo = todos.find((todo) => todo._id === id);
-    editedTodo.task = title;
-    editedTodo.color = color;
-    editedTodo.finishDate = date;
-    setTodos([...todos]);
-    setEditTodo(null);
+  // Function to handle saving edits to a Todo
+  const handleEditSave = async (id, title, color, finishDate) => {
+    try {
+      const token = document.cookie.split("=")[1];
+      const res = await fetch(`http://localhost:5000/api/todo/${id}`, {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `${token}`,
+        },
+        body: JSON.stringify({
+          task: title,
+          color: color,
+          finishDate: finishDate,
+        }),
+      });
+      if (!res.ok) {
+        console.log(await res.json());
+        return;
+      }
+      handleEditTask(id, title, color, finishDate);
+      setShowEditModal(false);
+    } catch (err) {
+      console.log(err);
+    }
   };
 
   return (
@@ -137,6 +152,7 @@ const TodoList = () => {
             color={todo.color}
             finishDate={todo.finishDate}
             onDelete={handleDelete}
+            onEdit={handleEditSave}
           />
         ))}
       </div>
@@ -187,6 +203,14 @@ const TodoList = () => {
           </Button>
         </Modal.Footer>
       </Modal>
+      {editTodo && (
+        <TodoItem.EditModal
+          show={showEditModal}
+          onHide={() => setShowEditModal(false)}
+          todo={editTodo}
+          onSave={handleEditSave}
+        />
+      )}
     </Container>
   );
 };
