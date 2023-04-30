@@ -9,7 +9,7 @@ const TodoList = () => {
     const fetchTodos = async () => {
       try {
         const token = document.cookie.split("=")[1];
-        const res = await fetch("http:localhost:5000/api/todos", {
+        const res = await fetch("http://localhost:5000/api/todo", {
           headers: {
             Authorization: `Bearer ${token}`,
           },
