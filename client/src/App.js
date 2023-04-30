@@ -14,17 +14,7 @@ function App() {
     }
   }, []);
 
-  const blah = () => {
-    console.log("Testing");
-    console.log(errorMessage);
-  };
-
-  return (
-    <div className="App">
-      <button onClick={blah()}></button>
-      {loggedIn ? <TodoList /> : <Login />}
-    </div>
-  );
+  return <div className="App">{loggedIn ? <TodoList /> : <Login />}</div>;
 }
 
 export default App;

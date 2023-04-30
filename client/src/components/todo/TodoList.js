@@ -9,7 +9,6 @@ const TodoList = () => {
   const [newTaskColor, setNewTaskColor] = useState("#FFFFFF");
   const [newTaskDate, setNewTaskDate] = useState(new Date());
   const [showModal, setShowModal] = useState(false);
-  const [editTodo, setEditTodo] = useState(null);
 
   useEffect(() => {
     const fetchTodos = async () => {
@@ -138,17 +137,8 @@ const TodoList = () => {
             color={todo.color}
             finishDate={todo.finishDate}
             onDelete={handleDelete}
-            onEdit={() => setEditTodo(todo)}
           />
         ))}
-        {editTodo && (
-          <EditTodo
-            show={true}
-            editTodo={editTodo}
-            handleEditTask={handleEditTask}
-            handleClose={() => setEditTodo(null)}
-          />
-        )}
       </div>
       <Modal show={showModal} onHide={handleCloseModal}>
         <Modal.Header closeButton>

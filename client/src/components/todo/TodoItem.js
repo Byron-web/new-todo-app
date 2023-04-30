@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { Card, Button } from "react-bootstrap";
 
-const TodoItem = ({ id, title, color, finishDate, onEdit, onDelete }) => {
+const TodoItem = ({ id, title, color, finishDate, onDelete }) => {
   const [completed, setCompleted] = useState(finishDate ? true : false);
   const [completionDate, setCompletionDate] = useState(null);
 
@@ -33,9 +33,7 @@ const TodoItem = ({ id, title, color, finishDate, onEdit, onDelete }) => {
         {completed && completionDate && (
           <Card.Text>Finished: {completionDate.toString()}</Card.Text>
         )}
-        <Button variant="secondary" onClick={() => onEdit(id)}>
-          Edit
-        </Button>{" "}
+        <Button variant="secondary">Edit</Button>{" "}
         <Button variant="danger" onClick={handleDelete}>
           Delete
         </Button>
