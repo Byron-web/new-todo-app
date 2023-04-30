@@ -6,6 +6,13 @@ import "bootstrap/dist/css/bootstrap.min.css";
 function App() {
   const [loggedIn, setLoggedIn] = useState(false);
 
+  useEffect(() => {
+    const token = document.cookie.split("=")[1];
+    if (token) {
+      setLoggedIn(true);
+    }
+  }, []);
+
   return (
     <div className="App">
       {loggedIn}

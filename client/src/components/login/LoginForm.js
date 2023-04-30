@@ -1,7 +1,8 @@
 import React, { useState } from "react";
 import { Form, Button } from "react-bootstrap";
+import "bootstrap/dist/css/bootstrap.min.css";
 
-const LoginForm = () => {
+const LoginForm = ({ handleShowSignup }) => {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [loggedIn, setLoggedIn] = useState(false);
@@ -24,6 +25,7 @@ const LoginForm = () => {
       }
       document.cookie = `token=${(await res.json()).token}`;
       setLoggedIn(true);
+      window.location.reload();
     } catch (error) {
       console.log(error);
       setErrrorMessage("Failed to log in");
@@ -44,7 +46,6 @@ const LoginForm = () => {
           We'll never share your email with anyone else.
         </Form.Text>
       </Form.Group>
-      {loggedIn[0]}
       <Form.Group className="mb-3" controlId="formBasicPassword">
         <Form.Label>Password</Form.Label>
         <Form.Control
@@ -54,9 +55,15 @@ const LoginForm = () => {
           onChange={(e) => setPassword(e.target.value)}
         />
       </Form.Group>
-      <Button variant="link" type="submit">
-        Log in
-      </Button>
+      <div className="d-flex justify-content-around align-items-center mb-3">
+        <Button variant="success" type="submit">
+          Log in
+        </Button>
+        <p className="m-0">Or</p>
+        <Button variant="primary" onClick={handleShowSignup}>
+          Sign up
+        </Button>
+      </div>
     </Form>
   );
 };

@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { Modal, Form, Button } from "react-bootstrap";
 
-const SignupForm = ({ show, handleClose, handleShowLogin }) => {
+const SignupForm = ({ handleShowLogin }) => {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
@@ -77,14 +77,14 @@ const SignupForm = ({ show, handleClose, handleShowLogin }) => {
         />
       </Form.Group>
       <div className="d-flex justify-content-around align-items-center mb-3">
-        <p className="m-0">Or</p>
         <Button variant="primary" onClick={handleShowLogin}>
           Log in
         </Button>
+        <p className="m-0">Or</p>
+        <Button variant="success" type="submit">
+          Sign up
+        </Button>
       </div>
-      <Button variant="success" type="submit">
-        Sign up
-      </Button>
       {signupSuccess && (
         <div className="text-success mt-3">Sign up successful!</div>
       )}
