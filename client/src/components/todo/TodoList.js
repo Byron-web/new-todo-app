@@ -32,7 +32,7 @@ const TodoList = () => {
       <h1>Todo List</h1>
       <div>
         {todos.map((todo) => (
-          <TodoItem key={todo._id} title={todo.title} />
+          <TodoItem key={todo._id} id={todo._id} title={todo.task} />
         ))}
       </div>
     </Container>

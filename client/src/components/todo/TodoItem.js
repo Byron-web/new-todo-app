@@ -1,7 +1,7 @@
 import React from "react";
 import { Card, Button } from "react-bootstrap";
 
-const TodoItem = ({ title }) => {
+const TodoItem = ({ id, title }) => {
   return (
     <Card>
       <Card.Body className="p-4">
