@@ -44,5 +44,5 @@ const endsWith = (value, endString) => {
 };
 
 const exceedsMaxLength = (value, maxLength) => {
-  return value.length > maxLength;
+  return value && value.length > maxLength;
 };
