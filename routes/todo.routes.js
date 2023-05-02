@@ -4,6 +4,7 @@ const todosController = require("../controller/todo.controller");
 const authenticationMiddleware = require("../middleware/authentication.middleware");
 const validationMiddleware = require("../middleware/validation.middleware");
 
+//Main Route for GET AND POST using authentication and validation before sending response
 router.get(
   "/",
   authenticationMiddleware.authenticate,

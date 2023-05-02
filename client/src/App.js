@@ -3,9 +3,9 @@ import Login from "./components/login/Login";
 import TodoList from "./components/todo/TodoList";
 import "bootstrap/dist/css/bootstrap.min.css";
 
+//App checks if the user has a valid JWT token, if so the todo view will render, else the login/register screen will render
 function App() {
   const [loggedIn, setLoggedIn] = useState(false);
-  const [errorMessage, setErrrorMessage] = useState("");
 
   useEffect(() => {
     const token = document.cookie.split("=")[1];

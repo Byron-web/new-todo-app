@@ -2,12 +2,14 @@ import React, { useState } from "react";
 import { Form, Button } from "react-bootstrap";
 import "bootstrap/dist/css/bootstrap.min.css";
 
+//A component that renders a login form.
 const LoginForm = ({ handleShowSignup }) => {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [loggedIn, setLoggedIn] = useState(false);
   const [errorMessage, setErrrorMessage] = useState("");
 
+  //A function that handles the form submission.
   const handleSubmit = async (e) => {
     e.preventDefault();
     const loginData = { username, password };

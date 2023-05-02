@@ -1,6 +1,7 @@
 const mongoose = require("mongoose");
 const { model } = require("mongoose");
 
+//Todo Model Schema
 const TodoSchema = new mongoose.Schema({
   task: {
     type: String,

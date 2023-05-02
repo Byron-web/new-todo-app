@@ -13,6 +13,8 @@ const TodoList = () => {
   const [newTaskDate, setNewTaskDate] = useState(new Date());
   const [showModal, setShowModal] = useState(false);
 
+  /* This code is a React component that displays a todo list with various functionalities, including creating new tasks, editing existing tasks, and deleting tasks. It fetches the data from an API using fetch() and sets the state using useState() and useEffect() hooks.*/
+
   useEffect(() => {
     const fetchTodos = async () => {
       try {
@@ -120,27 +122,26 @@ const TodoList = () => {
     setEditModalShow(false);
   };
 
-  const handleEditSave = async (event) => {
-    event.preventDefault();
+  const handleEditSave = async (id, title) => {
     try {
       const token = document.cookie.split("=")[1];
-      const res = await fetch(`http://localhost:5000/api/todo/${editId}`, {
+      const res = await fetch(`http://localhost:5000/api/todo/${id}`, {
         method: "PUT",
         headers: {
           "Content-Type": "application/json",
           Authorization: `${token}`,
         },
-        body: JSON.stringify({ task: editTitle }),
+        body: JSON.stringify({ title }),
       });
       if (!res.ok) {
-        console.log(await res.json());
+        setErrorMessage((await res.json()).err);
         return;
       }
-      setEditModalShow(false);
-      const updatedTodos = todos.map((todo) =>
-        todo._id === editId ? { ...todo, task: editTitle } : todo
+      const updatedTodo = await res.json();
+      setTodos(
+        todos.map((todo) => (todo._id === updatedTodo._id ? updatedTodo : todo))
       );
-      setTodos(updatedTodos);
+      setEditModalShow(false);
     } catch (err) {
       console.log(err);
     }
@@ -150,7 +151,7 @@ const TodoList = () => {
     <Container>
       {errorMessage}
       <h1>Todo List</h1>
-      <Button variant="primary" onClick={handleCreateClick}>
+      <Button className="mt-10" variant="primary" onClick={handleCreateClick}>
         Create
       </Button>
       <div>
@@ -163,6 +164,7 @@ const TodoList = () => {
             finishDate={todo.finishDate}
             onDelete={handleDelete}
             onEdit={handleEdit}
+            onEditSave={handleEditSave}
           />
         ))}
       </div>

@@ -1,6 +1,16 @@
 import React, { useState } from "react";
 import { Modal, Form, Button } from "react-bootstrap";
 
+/* his code imports React and the useState hook from the "react" library, as well as Modal, Form, and Button components from the "react-bootstrap" library.
+
+The code defines a functional component called SignupForm which takes in a prop called handleShowLogin. This component contains a form with three inputs: username, password, and confirmPassword. When the user submits the form by clicking the "Sign up" button, the handleSubmit function is called. It first checks if the entered passwords match. If they do not match, it sets the signupError state to "Passwords do not match" and returns.
+
+If the passwords match, the function sends a POST request to the "/api/users/register" endpoint with the username and password entered by the user. If the response is successful, it sets the signupSuccess state to true and clears the signupError state. If the response is not successful, it sets the signupSuccess state to false and sets the signupError state to the error message returned by the server.
+
+The form also contains two buttons: "Log in" and "Sign up". Clicking the "Log in" button will call the handleShowLogin function passed in as a prop. Clicking the "Sign up" button will submit the form.
+
+The component also conditionally renders a success or error message depending on the state of signupSuccess and signupError. If signupSuccess is true, it displays a green "Sign up successful!" message. If signupError is not an empty string, it displays a red error message with the error message returned by the server. */
+
 const SignupForm = ({ handleShowLogin }) => {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");

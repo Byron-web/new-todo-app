@@ -1,7 +1,9 @@
 import React, { useState } from "react";
 import { Card, Button, Modal, Form } from "react-bootstrap";
 
-const TodoItem = ({ id, title, color, finishDate, onDelete }) => {
+/* This code defines a React functional component called TodoItem that renders a Card component from the React Bootstrap library. The Card displays information about a todo item, including its title, completion status, and color. The component also includes a Modal component that allows the user to edit the todo item's title. */
+
+const TodoItem = ({ id, title, color, finishDate, onDelete, onEditSave }) => {
   const [completed, setCompleted] = useState(finishDate ? true : false);
   const [completionDate, setCompletionDate] = useState(null);
   const [editModalShow, setEditModalShow] = useState(false);
@@ -56,7 +58,7 @@ const TodoItem = ({ id, title, color, finishDate, onDelete }) => {
         <Modal.Header closeButton>
           <Modal.Title>Edit Todo</Modal.Title>
         </Modal.Header>
-        <Form onSubmit={handleEdit}>
+        <Form onSubmit={onEditSave}>
           <Modal.Body>
             <Form.Group controlId="formBasicEmail">
               <Form.Label>Title</Form.Label>
