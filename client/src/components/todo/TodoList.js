@@ -139,7 +139,12 @@ const TodoList = () => {
       }
       const updatedTodo = await res.json();
       setTodos(
-        todos.map((todo) => (todo._id === updatedTodo._id ? updatedTodo : todo))
+        todos.map((todo) => {
+          if (todo._id === updatedTodo._id) {
+            return { ...todo, title: updatedTodo.title };
+          }
+          return todo;
+        })
       );
       setEditModalShow(false);
     } catch (err) {
