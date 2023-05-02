@@ -84,6 +84,7 @@ const TodoList = () => {
         return;
       }
       const data = await res.json();
+      console.log(data._id);
       setTodos([...todos, data]);
       handleCloseModal();
     } catch (err) {
@@ -112,17 +113,11 @@ const TodoList = () => {
     }
   };
 
-  const handleEdit = (id, title) => {
-    setEditId(id);
-    setEditTitle(title);
-    setEditModalShow(true);
-  };
-
   const handleEditCancel = () => {
     setEditModalShow(false);
   };
 
-  const handleEditSave = async (id, title) => {
+  const handleEditSave = async (title) => {
     try {
       const token = document.cookie.split("=")[1];
       const res = await fetch(`http://localhost:5000/api/todo/${id}`, {
@@ -133,11 +128,13 @@ const TodoList = () => {
         },
         body: JSON.stringify({ title }),
       });
+      console.log(res);
       if (!res.ok) {
-        setErrorMessage((await res.json()).err);
+        console.log(await res.json());
         return;
       }
       const updatedTodo = await res.json();
+      console.log(updatedTodo._id);
       setTodos(
         todos.map((todo) => {
           if (todo._id === updatedTodo._id) {
@@ -146,6 +143,7 @@ const TodoList = () => {
           return todo;
         })
       );
+
       setEditModalShow(false);
     } catch (err) {
       console.log(err);
@@ -168,7 +166,6 @@ const TodoList = () => {
             color={todo.color}
             finishDate={todo.finishDate}
             onDelete={handleDelete}
-            onEdit={handleEdit}
             onEditSave={handleEditSave}
           />
         ))}

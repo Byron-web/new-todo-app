@@ -30,11 +30,6 @@ const TodoItem = ({ id, title, color, finishDate, onDelete, onEditSave }) => {
     }
   };
 
-  const handleEdit = () => {
-    onEdit(id, editTitle);
-    setEditModalShow(false);
-  };
-
   return (
     <Card style={{ backgroundColor: color }}>
       <Card.Body>
@@ -58,7 +53,13 @@ const TodoItem = ({ id, title, color, finishDate, onDelete, onEditSave }) => {
         <Modal.Header closeButton>
           <Modal.Title>Edit Todo</Modal.Title>
         </Modal.Header>
-        <Form onSubmit={onEditSave}>
+        <Form
+          onSubmit={(e) => {
+            e.preventDefault();
+            onEditSave(editTitle);
+            setEditModalShow(false);
+          }}
+        >
           <Modal.Body>
             <Form.Group controlId="formBasicEmail">
               <Form.Label>Title</Form.Label>
@@ -74,8 +75,11 @@ const TodoItem = ({ id, title, color, finishDate, onDelete, onEditSave }) => {
             <Button variant="secondary" onClick={() => setEditModalShow(false)}>
               Cancel
             </Button>
-            <Button variant="primary" type="submit">
-              Save
+            <Button
+              variant="primary"
+              onClick={(event) => onEditSave(editTitle, event)}
+            >
+              Save changes
             </Button>
           </Modal.Footer>
         </Form>
