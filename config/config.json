@@ -1,5 +1,5 @@
 {
   "port": "5000",
   "secret": "$ecr3t123",
-  "mongoConnectionString": "mongodb://localhost:27017/todo-database"
+  "mongoConnectionString": "mongodb+srv://Byron_Labuschagne:UGSezTOWcp96YLwp@test.f6dzjwi.mongodb.net/todo-database"
 }

@@ -25,7 +25,7 @@ const LoginForm = ({ handleShowSignup }) => {
         setErrrorMessage((await res.json()).err);
         return;
       }
-      document.cookie = `token=${(await res.json()).token}`;
+      sessionStorage.setItem("token", (await res.json()).token);
       setLoggedIn(true);
       window.location.reload();
     } catch (error) {

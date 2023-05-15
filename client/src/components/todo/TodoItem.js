@@ -1,17 +1,17 @@
 import React, { useState } from "react";
-import { Card, Button, Modal, Form } from "react-bootstrap";
+import { Card, Button } from "react-bootstrap";
 
-/* This code defines a React functional component called TodoItem that renders a Card component from the React Bootstrap library. The Card displays information about a todo item, including its title, completion status, and color. The component also includes a Modal component that allows the user to edit the todo item's title. */
+/* This code defines a React functional component called TodoItem that renders a Card component from the React Bootstrap library. The Card displays information about a todo item, including its title and color.*/
 
-const TodoItem = ({ id, title, color, finishDate, onDelete, onEditSave }) => {
-  const [completed, setCompleted] = useState(finishDate ? true : false);
-  const [completionDate, setCompletionDate] = useState(null);
-  const [editModalShow, setEditModalShow] = useState(false);
+const TodoItem = ({ id, title, color, onDelete, onUpdate }) => {
   const [editTitle, setEditTitle] = useState(title);
+  const [isEditing, setIsEditing] = useState(false);
 
+  // The handleDelete function is an asynchronous function that is called when the user clicks the "Delete" button for a Todo item.
   const handleDelete = async () => {
     try {
-      const token = document.cookie.split("=")[1];
+      const token = sessionStorage.getItem("token");
+      //sends a DELETE request to the backend API to delete the corresponding Todo item with the specified id.
       const res = await fetch(`http://localhost:5000/api/todo/${id}`, {
         method: "DELETE",
         headers: {
@@ -23,67 +23,65 @@ const TodoItem = ({ id, title, color, finishDate, onDelete, onEditSave }) => {
         console.log(await res.json());
         return;
       }
+      //If the DELETE request is successful, it calls the onDelete callback function to remove the Todo item from the UI.
       onDelete(id);
+      // Finally, it reloads the current page to update the UI with the remaining Todo items.
       window.location.reload();
+      // If the DELETE request is not successful, it logs the error to the console.
     } catch (err) {
       console.log(err);
     }
   };
 
+  // This function handles updating the title of a todo item.
+  const handleUpdate = () => {
+    onUpdate(id, editTitle);
+    setIsEditing(false);
+    window.location.reload();
+  };
+
+  //The component is enclosed in a Card component with the background color set to the color prop.
   return (
     <Card style={{ backgroundColor: color }}>
       <Card.Body>
-        <Card.Title>{title}</Card.Title>
-        {completed && completionDate && (
-          <Card.Text>Finished: {completionDate.toString()}</Card.Text>
+        {/* If the isEditing state is true, an input element is rendered instead of
+        the Card.Title element. The input element has the editTitle state as its
+        value and an onChange handler that updates the editTitle state. onBlur
+        and onKeyDown handlers are also present to handle updates when the input
+        loses focus or when the user presses the Enter key. The autoFocus
+        attribute is set to true to make the input element focused when it is
+        rendered. */}
+        {isEditing ? (
+          <input
+            type="text"
+            value={editTitle}
+            onChange={(event) => setEditTitle(event.target.value)}
+            onBlur={handleUpdate}
+            onKeyDown={(event) => {
+              if (event.key === "Enter") {
+                handleUpdate();
+              }
+            }}
+            autoFocus
+          />
+        ) : (
+          // If the isEditing state is false, the Card.Title element is rendered with an onClick handler that sets the isEditing state to true.
+          <Card.Title onClick={() => setIsEditing(true)}>{title}</Card.Title>
         )}
-        <Button variant="secondary" onClick={() => setEditModalShow(true)}>
+        {/* The Edit button has an onClick handler that toggles the isEditing state. */}
+        <Button
+          variant="secondary"
+          onClick={() => setIsEditing((prevState) => !prevState)}
+        >
           Edit
         </Button>{" "}
+        {/* The Delete button has an onClick handler that calls the handleDelete
+        function, which sends a DELETE request to the server to delete the Todo
+        item. */}
         <Button variant="danger" onClick={handleDelete}>
           Delete
         </Button>
       </Card.Body>
-      {completed && completionDate && (
-        <Card.Footer className="text-muted">
-          Finished: {completionDate.toString()}
-        </Card.Footer>
-      )}
-      <Modal show={editModalShow} onHide={() => setEditModalShow(false)}>
-        <Modal.Header closeButton>
-          <Modal.Title>Edit Todo</Modal.Title>
-        </Modal.Header>
-        <Form
-          onSubmit={(e) => {
-            e.preventDefault();
-            onEditSave(editTitle);
-            setEditModalShow(false);
-          }}
-        >
-          <Modal.Body>
-            <Form.Group controlId="formBasicEmail">
-              <Form.Label>Title</Form.Label>
-              <Form.Control
-                type="text"
-                placeholder="Enter title"
-                value={editTitle}
-                onChange={(event) => setEditTitle(event.target.value)}
-              />
-            </Form.Group>
-          </Modal.Body>
-          <Modal.Footer>
-            <Button variant="secondary" onClick={() => setEditModalShow(false)}>
-              Cancel
-            </Button>
-            <Button
-              variant="primary"
-              onClick={(event) => onEditSave(editTitle, event)}
-            >
-              Save changes
-            </Button>
-          </Modal.Footer>
-        </Form>
-      </Modal>
     </Card>
   );
 };

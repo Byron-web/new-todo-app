@@ -2,9 +2,14 @@ const express = require("express");
 const router = express.Router();
 const usersController = require("../controller/user.controller");
 const middleWareAuth = require("../middleware/authentication.middleware");
+const middleWareValidation = require("../middleware/validation.middleware");
 
 //Main Route for GET AND POST using authentication and validation before sending response
-router.post("/register", usersController.register);
+router.post(
+  "/register",
+  usersController.register,
+  middleWareValidation.invalidUsername
+);
 router.post("/login", usersController.login);
 router.get("/auth", middleWareAuth.authenticate, usersController.auth);
 

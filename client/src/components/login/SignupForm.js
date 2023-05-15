@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Modal, Form, Button } from "react-bootstrap";
+import { Form, Button } from "react-bootstrap";
 
 /* his code imports React and the useState hook from the "react" library, as well as Modal, Form, and Button components from the "react-bootstrap" library.
 
@@ -18,39 +18,34 @@ const SignupForm = ({ handleShowLogin }) => {
   const [signupSuccess, setSignupSuccess] = useState(false);
   const [signupError, setSignupError] = useState("");
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     if (password !== confirmPassword) {
       setSignupError("Passwords do not match");
       return;
     }
-
-    fetch("/api/users/register", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        username: username,
-        password: password,
-      }),
-    })
-      .then((response) => {
-        if (!response.ok) {
-          throw new Error("Network response was not ok");
-        }
-        return response.json();
-      })
-      .then((data) => {
-        setSignupSuccess(true);
-        setSignupError("");
-      })
-      .catch((error) => {
-        response.json().then((data) => {
-          setSignupSuccess(false);
-          setSignupError(data.message);
-        });
+    try {
+      const res = await fetch("/api/users/register", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          username: username,
+          password: password,
+        }),
       });
+      if (!res.ok) {
+        setSignupError((await res.json()).err);
+        return;
+      }
+      setSignupSuccess(true);
+      setSignupError("");
+    } catch (err) {
+      console.log(err);
+      setSignupSuccess(false);
+      setSignupError(err);
+    }
   };
 
   return (

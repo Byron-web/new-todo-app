@@ -8,7 +8,7 @@ function App() {
   const [loggedIn, setLoggedIn] = useState(false);
 
   useEffect(() => {
-    const token = document.cookie.split("=")[1];
+    const token = sessionStorage.getItem("token");
     if (token) {
       setLoggedIn(true);
     }
