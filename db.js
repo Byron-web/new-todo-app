@@ -28,6 +28,11 @@ exports.getAllTodos_async = async () => {
   return await Todo.find();
 };
 
+// Returns all the todos for the specified user ID from the database
+exports.getAllTodosByUserId_async = async (userId) => {
+  return await Todo.find({ userId: userId });
+};
+
 //Creates a new todo in the database and returns its id
 exports.createTodo_async = async (todo) => {
   return await new Todo(todo).save();

@@ -5,8 +5,10 @@ const db = require("../db");
 // This is an asynchronous function that retrieves all the todos from the database and sends them as a response.
 exports.getAllTodos = async (req, res) => {
   try {
-    // It calls the 'getAllTodos_async' function from the 'db' object to retrieve all the todos.
-    var todos = await db.getAllTodos_async();
+    // Retrieve the user ID from the request object (assuming it's stored in the req.user.id property after authentication)
+    const userId = req.user._id;
+    // Retrieve todos for the logged-in user from the database
+    const todos = await db.getAllTodosByUserId_async(userId);
     // If no todos are found, it sends a 204 status code indicating that the request was successful but there is no data to return.
     if (!todos || todos.length <= 0) {
       return res.status(204).send();
