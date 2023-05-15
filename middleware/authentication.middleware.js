@@ -9,7 +9,7 @@ exports.authenticate = (req, res, next) => {
   const token = req.headers.authorization.replace(/bearer /i, "");
   try {
     const decoded = jwt.verify(token, process.env.SECRET || config.secret);
-    res.locals.username = decoded.username;
+    req.user = { _id: decoded.userId };
     return next();
   } catch (err) {
     return res.status(401).send({ err: "Invalid token" });
